@@ -13,6 +13,7 @@ const PARTICLE_VELOCITY_RANGE = {
   x: [-1, 1],
   y: [-3.5, -1.5]
 };
+let angle=0;
 
 // Our extension's custom redux middleware. Here we can intercept redux actions and respond to them.
 exports.middleware = (store) => (next) => (action) => {
@@ -100,7 +101,7 @@ exports.decorateTerm = (Term, { React, notify }) => {
       this._resizeCanvas = this._resizeCanvas.bind(this);
       this._onTerminal = this._onTerminal.bind(this);
       this._onCursorChange = this._onCursorChange.bind(this);
-      this._shake = throttle(this._shake.bind(this), 100, { trailing: false });
+      this._rotate = throttle(this._rotate.bind(this), 100, { trailing: false });
       this._spawnParticles = throttle(this._spawnParticles.bind(this), 25, { trailing: false });
       // Initial particle state
       this._particles = [];
@@ -198,10 +199,10 @@ exports.decorateTerm = (Term, { React, notify }) => {
 
     // 'Shakes' the screen by applying a temporary translation 
     // to the terminal container.
-    _shake () {
+    _rotate () {
       // TODO: Maybe we should do this check in `_onCursorChange`?
       if(!this.props.wowMode) return;
-
+      /*
       const intensity = 1 + 2 * Math.random();
       const x = intensity * (Math.random() > 0.5 ? -1 : 1);
       const y = intensity * (Math.random() > 0.5 ? -1 : 1);
@@ -209,10 +210,13 @@ exports.decorateTerm = (Term, { React, notify }) => {
       setTimeout(() => {
         if (this._div) this._div.style.transform = '';
       }, 75);
+      */
+      angle+=30;
+      this._div.style.transform="rotate("+angle+"deg)";
     }
 
     _onCursorChange () {
-      this._shake();
+      this._rotate();
       // Get current coordinates of the cursor relative the container and 
       // spawn new articles.
       const { top, left } = this._cursor.getBoundingClientRect();
